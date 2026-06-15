@@ -1,0 +1,28 @@
+name: Auto Create Pull Request
+
+on:
+  push:
+    branches-ignore:
+      - main
+      - master
+
+jobs:
+  create-pr:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create Pull Request
+        run: |
+          gh pr create \
+            --fill \
+            --draft \
+            --base main \
+            --label "needs-review" \
+            || echo "PR already exists or skipping."
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
